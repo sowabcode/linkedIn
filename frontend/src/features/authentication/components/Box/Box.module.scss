@@ -1,0 +1,10 @@
+.root {
+  @media screen and (min-width: 768px) {
+    width: 30rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}

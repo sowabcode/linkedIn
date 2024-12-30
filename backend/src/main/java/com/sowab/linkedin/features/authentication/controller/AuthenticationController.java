@@ -31,7 +31,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/user")
-    public AuthenticationUser getUser(@RequestAttribute("AuthenticatedUser") AuthenticationUser user) {
+    public AuthenticationUser getUser(@RequestAttribute("authenticatedUser") AuthenticationUser user) {
         return user;
     }
 
@@ -41,7 +41,7 @@ public class AuthenticationController {
         return "Email verified successfully.";
     }
 
-    @PutMapping("/send-email-verification-token")
+    @GetMapping("/send-email-verification-token")
     public String sendEmailVerificationToken(@RequestAttribute("authenticatedUser") AuthenticationUser user) {
         authenticationService.sendEmailVerificationToken(user.getEmail());
         return "Email verification token sent successfully.";
