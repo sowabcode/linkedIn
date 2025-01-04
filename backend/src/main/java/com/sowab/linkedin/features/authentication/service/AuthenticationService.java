@@ -8,6 +8,9 @@ import com.sowab.linkedin.features.authentication.utils.EmailService;
 import com.sowab.linkedin.features.authentication.utils.Encoder;
 import com.sowab.linkedin.features.authentication.utils.JsonWebToken;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,9 @@ public class AuthenticationService {
     private final JsonWebToken jsonWebToken;
     private final EmailService emailService;
     private final AuthenticationUserRepository authenticationUserRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public AuthenticationService(Encoder encoder, JsonWebToken jsonWebToken, EmailService emailService, AuthenticationUserRepository authenticationUserRepository) {
         this.encoder = encoder;
@@ -163,4 +169,26 @@ public class AuthenticationService {
         }
     }
 
+    public AuthenticationUser updateUserProfile(Long userId, String firstName, String lastName, String company, String position, String location) {
+        AuthenticationUser user = authenticationUserRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found."));
+
+        if(firstName != null) user.setFirstName(firstName);
+        if(lastName != null) user.setLastName(lastName);
+        if(company != null) user.setCompany(company);
+        if(position != null) user.setPosition(position);
+        if(location != null) user.setLocation(location);
+
+        return authenticationUserRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        AuthenticationUser user = entityManager.find(AuthenticationUser.class, userId);
+        if (user != null) {
+            entityManager.createNativeQuery("DELETE FROM posts_likes WHERE user_id = :userId")
+                    .setParameter("userId", userId)
+                    .executeUpdate();
+            authenticationUserRepository.deleteById(userId);
+        }
+    }
 }
