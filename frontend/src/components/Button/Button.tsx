@@ -4,12 +4,21 @@ import classes from "./Button.module.scss";
 type ButtonPropos = ButtonHTMLAttributes<HTMLButtonElement> & {
   outline?: boolean;
   children: ReactNode;
+  size?: "small" | "medium" | "large";
 };
 
-export function Button({ outline, children, ...others }: ButtonPropos) {
+export function Button({
+  size = "large",
+  outline,
+  className,
+  children,
+  ...others
+}: ButtonPropos) {
   return (
     <button
-      className={`${classes.root} ${outline ? classes.outline : ""}`}
+      className={`${classes.root} ${classes[size]} ${className} ${
+        outline ? classes.outline : ""
+      }`}
       {...others}
     >
       {children}
